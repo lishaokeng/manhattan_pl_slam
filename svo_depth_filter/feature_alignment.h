@@ -1,0 +1,50 @@
+#ifndef SVO_FEATURE_ALIGNMENT_H_
+#define SVO_FEATURE_ALIGNMENT_H_
+
+#include "opencv2/opencv.hpp"
+#include "Eigen/Core"
+#include "Eigen/Dense"
+
+namespace TTE{
+namespace svo {
+
+/// Subpixel refinement of a reference feature patch with the current image.
+/// Implements the inverse-compositional approach (see "Lucas-Kanade 20 Years on"
+/// paper by Baker.
+namespace feature_alignment {
+
+bool align1D(
+    const cv::Mat& cur_img,
+    const Eigen::Vector2f& dir,                  // direction in which the patch is allowed to move
+    uint8_t* ref_patch_with_border,
+    uint8_t* ref_patch,
+    const int n_iter,
+    Eigen::Vector2d& cur_px_estimate,
+    double& h_inv);
+
+bool align2D(
+    const cv::Mat& cur_img,
+    uint8_t* ref_patch_with_border,
+    uint8_t* ref_patch,
+    const int n_iter,
+    Eigen::Vector2d& cur_px_estimate,
+    bool no_simd = false);
+
+bool align2D_SSE2(
+    const cv::Mat& cur_img,
+    uint8_t* ref_patch_with_border,
+    uint8_t* ref_patch,
+    const int n_iter,
+    Eigen::Vector2d& cur_px_estimate);
+
+bool align2D_NEON(
+    const cv::Mat& cur_img,
+    uint8_t* ref_patch_with_border,
+    uint8_t* ref_patch,
+    const int n_iter,
+    Eigen::Vector2d& cur_px_estimate);
+
+} // namespace feature_alignment
+} // namespace svo
+}
+#endif // SVO_FEATURE_ALIGNMENT_H_
